@@ -1,0 +1,87 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=90
+
+PROG=/usr/bin/vlmcsd
+
+start_service() {
+	config_load vlmcsd
+	
+	local enabled auto_activate internet_access port max_workers lcid activation_interval renewal_interval log_enabled log_verbose
+	
+	config_get_bool enabled config enabled 0
+	[ "$enabled" -eq 1 ] || return 0
+	
+	config_get auto_activate config auto_activate 1
+	config_get internet_access config internet_access 0
+	config_get port config port 1688
+	config_get max_workers config max_workers 4
+	config_get lcid config lcid 1033
+	config_get activation_interval config activation_interval "2h"
+	config_get renewal_interval config renewal_interval "7d"
+	config_get_bool log_enabled config log_enabled 0
+	config_get_bool log_verbose config log_verbose 0
+
+	procd_open_instance
+	procd_set_param command $PROG
+	
+	# Listen port
+	procd_append_param command -L 0.0.0.0:"$port" -L [::]:"$port"
+	
+	# Advanced parameters
+	[ -n "$max_workers" ] && procd_append_param command -m "$max_workers"
+	[ -n "$lcid" ] && procd_append_param command -C "$lcid"
+	[ -n "$activation_interval" ] && procd_append_param command -A "$activation_interval"
+	[ -n "$renewal_interval" ] && procd_append_param command -R "$renewal_interval"
+	
+	# Logging
+	if [ "$log_enabled" -eq 1 ]; then
+		procd_append_param command -l /var/log/vlmcsd.log
+		[ "$log_verbose" -eq 1 ] && procd_append_param command -v
+	fi
+
+	# Fallback to load ini file if user modified it manually
+	if [ -s /etc/vlmcsd.ini ]; then
+		procd_append_param command -i /etc/vlmcsd.ini
+	fi
+
+	procd_set_param respawn
+	procd_close_instance
+	
+	# Auto activate SRV record
+	local hostname=$(uci -q get system.@system[0].hostname)
+	local srv_rec="_vlmcs._tcp.lan,$hostname.lan,$port,0,100"
+	
+	if [ "$auto_activate" = "1" ]; then
+		if ! uci -q get dhcp.@dnsmasq[0].srvrecord | grep -q "$srv_rec"; then
+			uci add_list dhcp.@dnsmasq[0].srvrecord="$srv_rec"
+			uci commit dhcp
+			/etc/init.d/dnsmasq restart
+		fi
+	else
+		if uci -q get dhcp.@dnsmasq[0].srvrecord | grep -q "$srv_rec"; then
+			# Remove specific SRV record
+			# UCI doesn't support deleting a specific list element easily by value in shell
+			# Using sed to remove from /etc/config/dhcp
+			sed -i "/list srvrecord '$srv_rec'/d" /etc/config/dhcp
+			uci commit dhcp
+			/etc/init.d/dnsmasq restart
+		fi
+	fi
+}
+
+service_triggers() {
+	procd_add_reload_trigger "vlmcsd"
+}
+
+stop_service() {
+	local port=$(uci -q get vlmcsd.config.port || echo 1688)
+	local hostname=$(uci -q get system.@system[0].hostname)
+	local srv_rec="_vlmcs._tcp.lan,$hostname.lan,$port,0,100"
+	if uci -q get dhcp.@dnsmasq[0].srvrecord | grep -q "$srv_rec"; then
+		sed -i "/list srvrecord '$srv_rec'/d" /etc/config/dhcp
+		uci commit dhcp
+		/etc/init.d/dnsmasq restart
+	fi
+}
