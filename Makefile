@@ -8,6 +8,7 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI support for Vlmcsd KMS Server
 LUCI_DEPENDS:=+vlmcsd
+LUCI_PKGMAINTAINER:=konvict <logo@permails.com>
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
