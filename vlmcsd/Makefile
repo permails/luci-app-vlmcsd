@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vlmcsd
-PKG_VERSION=svn1112
+PKG_VERSION:=1112
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=konvict <logo@permails.com>
