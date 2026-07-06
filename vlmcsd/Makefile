@@ -8,13 +8,7 @@ PKG_MAINTAINER:=konvict <logo@permails.com>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/mchome/vlmcsd.git
-PKG_SOURCE_VERSION:=ae16d0381ddc9fc02d949ed1a9d034ab6b1e7cbb
-
-PKG_SOURCE_SUBDIR:=$(PKG_NAME)
-PKG_SOURCE:=$(PKG_SOURCE_SUBDIR).tar.gz
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -29,6 +23,11 @@ endef
 
 define Package/vlmcsd/description
 	vlmcsd is a KMS Emulator in C.
+endef
+
+define Build/Prepare
+	mkdir -p $(PKG_BUILD_DIR)
+	cp -a ./src/* $(PKG_BUILD_DIR)/
 endef
 
 MAKE_FLAGS += \
