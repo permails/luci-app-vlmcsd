@@ -20,14 +20,14 @@ function getServiceStatus() {
 
 function renderStatus(status) {
 	const color = status ? 'green' : 'red';
-	const service = _('Vlmcsd KMS Server');
+	const service = _('KMS Server');
 	const running = status ? _('RUNNING') : _('NOT RUNNING');
 	return `<em><span style="color:${color}"><strong>${service} ${running}</strong></span></em>`;
 }
 
 return view.extend({
 	render() {
-		const m = new form.Map('vlmcsd', _('Vlmcsd KMS Server'));
+		const m = new form.Map('vlmcsd', _('KMS Server'));
 
 		let s = m.section(form.TypedSection);
 		s.anonymous = true;
@@ -52,7 +52,7 @@ return view.extend({
 		s.tab('config_file', _('Configuration File'), _('Edit the content of the /etc/vlmcsd.ini file.'));
 
 		// --- General Settings ---
-		let o = s.taboption('general', form.Flag, 'enabled', _('Enable Vlmcsd KMS Server'));
+		let o = s.taboption('general', form.Flag, 'enabled', _('Enable KMS Server'));
 		o.default = o.disabled;
 		o.rmempty = false;
 
@@ -98,18 +98,20 @@ return view.extend({
 		o.depends('log_enabled', '1');
 
 		// --- Log Viewer ---
-		o = s.taboption('log', form.DummyValue, '_log_view');
-		o.rawhtml = true;
+		o = s.taboption('log', form.TextValue, '_log_view');
+		o.rows = 20;
+		o.readonly = true;
 		o.load = function() {
 			return fs.read_direct('/var/log/vlmcsd.log', 'text').then(function(res) {
 				if (res && res.trim() !== '') {
-					return '<textarea style="width: 100%; height: 400px; resize: none;" readonly="readonly">' + res + '</textarea>';
+					return res;
 				}
-				return '<textarea style="width: 100%; height: 400px; resize: none;" readonly="readonly">' + _('No log data available.') + '</textarea>';
+				return _('No log data available.');
 			}).catch(function() {
-				return '<textarea style="width: 100%; height: 400px; resize: none;" readonly="readonly">' + _('No log data available.') + '</textarea>';
+				return _('No log data available.');
 			});
 		};
+		o.write = function() {};
 		
 		o = s.taboption('log', form.Button, '_clear_log', _('Clear Log'));
 		o.inputstyle = 'remove';
