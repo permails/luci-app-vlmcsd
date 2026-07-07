@@ -37,7 +37,8 @@ start_service() {
 	
 	# Logging
 	if [ "$log_enabled" -eq 1 ]; then
-		procd_append_param command -l /var/log/vlmcsd.log
+		procd_set_param stdout 1
+		procd_set_param stderr 1
 		[ "$log_verbose" -eq 1 ] && procd_append_param command -v
 	fi
 
@@ -53,20 +54,40 @@ start_service() {
 	local hostname=$(uci -q get system.@system[0].hostname)
 	local srv_rec="_vlmcs._tcp.lan,$hostname.lan,$port,0,100"
 	
+	local changed=0
+	
+	# Always clean up any existing _vlmcs records to avoid duplicates/stale ports
+	if grep -q "_vlmcs\._tcp\.lan" /etc/config/dhcp; then
+		sed -i "/_vlmcs\._tcp\.lan/d" /etc/config/dhcp
+		changed=1
+	fi
+	
 	if [ "$auto_activate" = "1" ]; then
-		if ! uci -q get dhcp.@dnsmasq[0].srvrecord | grep -q "$srv_rec"; then
-			uci add_list dhcp.@dnsmasq[0].srvrecord="$srv_rec"
-			uci commit dhcp
-			/etc/init.d/dnsmasq restart
-		fi
+		uci add_list dhcp.@dnsmasq[0].srvrecord="$srv_rec"
+		changed=1
+	fi
+	
+	if [ "$changed" -eq 1 ]; then
+		uci commit dhcp
+		/etc/init.d/dnsmasq restart
+	fi
+
+	# Firewall rule for Internet access
+	if [ "$internet_access" -eq 1 ]; then
+		uci -q delete firewall.vlmcsd
+		uci set firewall.vlmcsd=rule
+		uci set firewall.vlmcsd.name='Allow-vlmcsd'
+		uci set firewall.vlmcsd.src='wan'
+		uci set firewall.vlmcsd.proto='tcp'
+		uci set firewall.vlmcsd.dest_port="$port"
+		uci set firewall.vlmcsd.target='ACCEPT'
+		uci commit firewall
+		/etc/init.d/firewall reload 2>/dev/null
 	else
-		if uci -q get dhcp.@dnsmasq[0].srvrecord | grep -q "$srv_rec"; then
-			# Remove specific SRV record
-			# UCI doesn't support deleting a specific list element easily by value in shell
-			# Using sed to remove from /etc/config/dhcp
-			sed -i "/list srvrecord '$srv_rec'/d" /etc/config/dhcp
-			uci commit dhcp
-			/etc/init.d/dnsmasq restart
+		if uci -q get firewall.vlmcsd >/dev/null; then
+			uci -q delete firewall.vlmcsd
+			uci commit firewall
+			/etc/init.d/firewall reload 2>/dev/null
 		fi
 	fi
 }
@@ -76,12 +97,15 @@ service_triggers() {
 }
 
 stop_service() {
-	local port=$(uci -q get vlmcsd.config.port || echo 1688)
-	local hostname=$(uci -q get system.@system[0].hostname)
-	local srv_rec="_vlmcs._tcp.lan,$hostname.lan,$port,0,100"
-	if uci -q get dhcp.@dnsmasq[0].srvrecord | grep -q "$srv_rec"; then
-		sed -i "/list srvrecord '$srv_rec'/d" /etc/config/dhcp
+	if grep -q "_vlmcs\._tcp\.lan" /etc/config/dhcp; then
+		sed -i "/_vlmcs\._tcp\.lan/d" /etc/config/dhcp
 		uci commit dhcp
 		/etc/init.d/dnsmasq restart
+	fi
+	
+	if uci -q get firewall.vlmcsd >/dev/null; then
+		uci -q delete firewall.vlmcsd
+		uci commit firewall
+		/etc/init.d/firewall reload 2>/dev/null
 	fi
 }
