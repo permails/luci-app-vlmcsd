@@ -49,8 +49,6 @@ return view.extend({
 		s.tab('general', _('General Settings'));
 		s.tab('advanced', _('Advanced Settings'));
 		s.tab('log', _('Activation Log'));
-		s.tab('config_file', _('Configuration File'), _('Edit the content of the /etc/vlmcsd.ini file.'));
-
 		// --- General Settings ---
 		let o = s.taboption('general', form.Flag, 'enabled', _('Enable KMS Server'));
 		o.default = o.disabled;
@@ -120,15 +118,6 @@ return view.extend({
 				window.location.reload();
 			});
 		};
-
-		// --- Config File ---
-		o = s.taboption('config_file', form.TextValue, '_tmpl',
-			null,
-			_("This is the content of the file '/etc/vlmcsd.ini', you can edit it here, usually no modification is needed."));
-		o.rows = 20;
-		o.monospace = true;
-		o.load = () => fs.trimmed('/etc/vlmcsd.ini').catch(() => '');
-		o.write = (_, value) => fs.write('/etc/vlmcsd.ini', value.trim().replace(/\r\n/g, '\n') + '\n');
 
 		return m.render();
 	}

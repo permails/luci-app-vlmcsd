@@ -24,7 +24,7 @@ start_service() {
 	config_get_bool log_verbose config log_verbose 0
 
 	procd_open_instance "vlmcsd"
-	procd_set_param command $PROG -D -e
+	procd_set_param command $PROG -D
 	
 	# Listen port
 	procd_append_param command -L 0.0.0.0:"$port" -L [::]:"$port"
@@ -37,9 +37,14 @@ start_service() {
 	
 	# Logging
 	if [ "$log_enabled" -eq 1 ]; then
+		touch /var/log/vlmcsd.log
+		chmod 666 /var/log/vlmcsd.log
+		procd_append_param command -l /var/log/vlmcsd.log
+		[ "$log_verbose" -eq 1 ] && procd_append_param command -v
+	else
+		procd_append_param command -e
 		procd_set_param stdout 1
 		procd_set_param stderr 1
-		[ "$log_verbose" -eq 1 ] && procd_append_param command -v
 	fi
 
 	# Fallback to load ini file if user modified it manually
