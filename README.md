@@ -51,7 +51,7 @@ LuCI ---> Applications ---> <*> luci-app-vlmcsd
 
 [English](README_EN.md)
 
-这是一个专为最新版 OpenWrt (22.03, 23.05, 24, 25 及以上版本) 深度重构的 KMS 服务器插件界面 (LuCI App)。底层的 KMS 激活服务由经典的 `vlmcsd` 提供。
+这是一个专为最新版 OpenWrt (22.03, 23.05, 24, 25 及以上版本) 深度重构的 KMS服务器插件界面 (LuCI App)。底层的 KMS 激活服务由经典的 `vlmcsd` 提供。
 
 ## 🌟 核心特性
 

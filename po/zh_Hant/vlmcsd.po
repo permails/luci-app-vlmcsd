@@ -29,8 +29,8 @@ msgid "Edit the content of the /etc/vlmcsd.ini file."
 msgstr "編輯 /etc/vlmcsd.ini 檔案的內容。"
 
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:52
-msgid "Enable Vlmcsd KMS Server"
-msgstr "啟用 Vlmcsd KMS 伺服器"
+msgid "Enable KMS Server"
+msgstr "啟用 KMS伺服器"
 
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:49
 msgid "General Settings"
@@ -57,5 +57,68 @@ msgstr "這是 /etc/vlmcsd.ini 檔案的內容，您可以在此進行編輯，�
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:23
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:30
 #: applications/luci-app-vlmcsd/root/usr/share/luci/menu.d/luci-app-vlmcsd.json:3
-msgid "Vlmcsd KMS Server"
-msgstr "Vlmcsd KMS 伺服器"
+msgid "KMS Server"
+msgstr "KMS伺服器"
+
+msgid "Automatically add DNS SRV record to dnsmasq."
+msgstr "自動向 dnsmasq 添加 DNS SRV 記錄。"
+
+msgid "Advanced Settings"
+msgstr "高級設定"
+
+msgid "Activation Log"
+msgstr "激活日誌"
+
+msgid "Listen Port"
+msgstr "監聽埠"
+
+msgid "Language / Region (LCID)"
+msgstr "語言區域 (LCID)"
+
+msgid "Set the culture language for generated ePIDs."
+msgstr "設定產生的 ePID 所屬的國家/地區語言。"
+
+msgid "English - US (1033)"
+msgstr "英語 - 美國 (1033)"
+
+msgid "Chinese - Simplified (2052)"
+msgstr "中文 - 簡體 (2052)"
+
+msgid "Chinese - Traditional (1028)"
+msgstr "中文 - 繁體 (1028)"
+
+msgid "Max Workers"
+msgstr "最大並發數"
+
+msgid "Maximum number of concurrent workers."
+msgstr "最大並發工作線程數量。"
+
+msgid "Activation Interval"
+msgstr "激活檢查間隔"
+
+msgid "How often unactivated clients should retry."
+msgstr "未激活的客戶端重試請求的間隔時間。"
+
+msgid "Renewal Interval"
+msgstr "續期間隔"
+
+msgid "How often activated clients should renew."
+msgstr "已激活的客戶端進行續期的間隔時間。"
+
+msgid "Enable Logging"
+msgstr "啟用日誌記錄"
+
+msgid "Write activation logs to /var/log/vlmcsd.log"
+msgstr "將 KMS 激活日誌保存到 /var/log/vlmcsd.log"
+
+msgid "Verbose Log"
+msgstr "輸出詳細日誌"
+
+msgid "Include detailed activation information in logs."
+msgstr "在日誌中包含更詳細的激活交互資訊。"
+
+msgid "No log data available."
+msgstr "暫無日誌資料。"
+
+msgid "Clear Log"
+msgstr "清空日誌"

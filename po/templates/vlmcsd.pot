@@ -22,7 +22,7 @@ msgid "Edit the content of the /etc/vlmcsd.ini file."
 msgstr ""
 
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:52
-msgid "Enable Vlmcsd KMS Server"
+msgid "Enable KMS Server"
 msgstr ""
 
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:49
@@ -50,7 +50,10 @@ msgstr ""
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:23
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:30
 #: applications/luci-app-vlmcsd/root/usr/share/luci/menu.d/luci-app-vlmcsd.json:3
-msgid "Vlmcsd KMS Server"
+msgid "KMS Server"
+msgstr ""
+
+msgid "Automatically add DNS SRV record to dnsmasq."
 msgstr ""
 
 msgid "Advanced Settings"

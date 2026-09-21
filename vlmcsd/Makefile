@@ -4,7 +4,7 @@ PKG_NAME:=vlmcsd
 PKG_VERSION:=1112
 PKG_RELEASE:=1
 
-PKG_MAINTAINER:=konvict <logo@permails.com>
+PKG_MAINTAINER:=permails <logo@permails.com>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 

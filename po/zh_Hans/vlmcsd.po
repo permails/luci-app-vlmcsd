@@ -30,7 +30,7 @@ msgstr "编辑 /etc/vlmcsd.ini 文件的内容。"
 
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:52
 msgid "Enable KMS Server"
-msgstr "启用 KMS 服务器"
+msgstr "启用 KMS服务器"
 
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:49
 msgid "General Settings"
@@ -58,7 +58,7 @@ msgstr "这是 /etc/vlmcsd.ini 文件的内容，您可以在此进行编辑，�
 #: applications/luci-app-vlmcsd/htdocs/luci-static/resources/view/vlmcsd.js:30
 #: applications/luci-app-vlmcsd/root/usr/share/luci/menu.d/luci-app-vlmcsd.json:3
 msgid "KMS Server"
-msgstr "KMS 服务器"
+msgstr "KMS服务器"
 
 msgid "Automatically add DNS SRV record to dnsmasq."
 msgstr "自动向 dnsmasq 添加 DNS SRV 记录。"
